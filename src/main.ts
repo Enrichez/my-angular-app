@@ -1,32 +1,26 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
 
-type Item = { id: number; name: string };
+@Component({
+  selector: 'hello-comp',
+  standalone: true,
+  template: `<p>Hello!</p>`,
+})
+export class HelloComponent {
+  @Input() name = '';
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HelloComponent],
   template: `
-    <h3>TrackBy with *ngFor</h3>
-    <button (click)="shuffle()">Shuffle</button>
-    <ul>
-      <li *ngFor="let it of items; trackBy">{{ it.id }} - {{ it.name }}</li>
-    </ul>
+    <h3>Parent Component</h3>
+    <hello-comp [name]="user"></hello-comp>
   `,
 })
 export class App {
-  items: Item[] = [
-    { id: 1, name: 'Alpha' },
-    { id: 2, name: 'Beta' },
-    { id: 3, name: 'Gamma' },
-  ];
-  shuffle() {
-    this.items = [...this.items].reverse();
-  }
-  trackById(_i: number, it: Item) {
-    return it.id;
-  }
+  user = 'Angular';
 }
 
 bootstrapApplication(App);
