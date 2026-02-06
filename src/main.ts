@@ -1,39 +1,58 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'counter-button',
+  selector: 'w3-card',
   standalone: true,
-  template: ` <button (click)="inc()">Clicked {{ count }} times</button> `,
+  styles: [
+    `
+      .card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 12px;
+        max-width: 360px;
+      }
+      .card-header {
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .card-body {
+        color: #333;
+      }
+    `,
+  ],
+  template: `
+    <div class="card">
+      <div class="card-header"><ng-content select="[card-title]"></ng-content></div>
+      <div class="card-body"><ng-content></ng-content></div>
+    </div>
+  `,
 })
-export class CounterButton {
-  @Input() step = 1;
-  @Output()
-  /** @type {import('@angular/core').EventEmitter<number>} */
-  clicked = new EventEmitter();
-  count = 0;
-  inc() {
-    this.count += this.step;
-    this.clicked.emit(this.count);
-  }
-}
+export class CardComponent {}
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CounterButton],
+  imports: [CardComponent],
   template: `
-    <h3>Component Output</h3>
-    <counter-button [step]="2" (clicked)="onChildClicked($event)"></counter-button>
-    <p>Parent received: {{ lastCount }}</p>
+    <h3>Content Projection (ng-content)</h3>
+
+    <w3-card>
+      <span card-title>Welcome</span>
+      <p>Project any markup into a reusable shell component.</p>
+    </w3-card>
+
+    <br />
+
+    <w3-card>
+      <span card-title>Another Card</span>
+      <ul>
+        <li>Works with lists</li>
+        <li>Images, buttons, etc.</li>
+      </ul>
+    </w3-card>
   `,
 })
-export class App {
-  lastCount = 0;
-  /** @param {number} n */
-  onChildClicked(n: number) {
-    this.lastCount = n;
-  }
-}
+export class App {}
 
 bootstrapApplication(App);
