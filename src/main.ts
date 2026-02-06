@@ -1,26 +1,39 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'hello-comp',
+  selector: 'counter-button',
   standalone: true,
-  template: `<p>Hello!</p>`,
+  template: ` <button (click)="inc()">Clicked {{ count }} times</button> `,
 })
-export class HelloComponent {
-  @Input() name = '';
+export class CounterButton {
+  @Input() step = 1;
+  @Output()
+  /** @type {import('@angular/core').EventEmitter<number>} */
+  clicked = new EventEmitter();
+  count = 0;
+  inc() {
+    this.count += this.step;
+    this.clicked.emit(this.count);
+  }
 }
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HelloComponent],
+  imports: [CounterButton],
   template: `
-    <h3>Parent Component</h3>
-    <hello-comp [name]="user"></hello-comp>
+    <h3>Component Output</h3>
+    <counter-button [step]="2" (clicked)="onChildClicked($event)"></counter-button>
+    <p>Parent received: {{ lastCount }}</p>
   `,
 })
 export class App {
-  user = 'Angular';
+  lastCount = 0;
+  /** @param {number} n */
+  onChildClicked(n: number) {
+    this.lastCount = n;
+  }
 }
 
 bootstrapApplication(App);
